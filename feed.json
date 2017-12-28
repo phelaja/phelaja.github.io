@@ -1,0 +1,35 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "Phelaja Blog",
+    "description": " ",
+    "home_page_url": "https://phelaja.github.io/",
+    "feed_url": "https://phelaja.github.io//feed.json",
+    "author" : {
+    	"name": "Phelaja",
+    	"avatar": "https://phelaja.github.io//img/main/pjp.png"
+    },
+    "items": [
+        {
+            "id": "https://phelaja.github.io//blog/2017/first-post.html",
+            
+           
+            "url": "https://phelaja.github.io//blog/2017/first-post.html",
+            "date_published": "2017-12-28T00:00:00Z",
+            "date_modified": "2017-12-28T00:00:00Z",
+            "author" : "Peter Phelan",
+            "tags": [ "blog" ],
+            "content_html" : "\n\n\n<p>This blog has been setup as a training blog.<\/p>\n<img src=\"/img/blog/scene.jpg\"/>\n<p>The is my first introductory post which will hopefully be the first of many. This site will catalog my journey through a multitude of training which I intend to undertake over the coming months<\/p>\n"
+        }, 
+        {
+            "id": "https://phelaja.github.io//blog/2017/second-post.html",
+            
+           
+            "url": "https://phelaja.github.io//blog/2017/second-post.html",
+            "date_published": "2017-12-28T00:00:00Z",
+            "date_modified": "2017-12-28T00:00:00Z",
+            "author" : "Peter Phelan",
+            "tags": [ "blog" ],
+            "content_html" : "\n<img src=\"/img/blog/bike.jpg\"/>\n\n<p>This first training post covers the keys elements of Azure Desgining and Implementing Websites.<\/p>\n\n<ul>\n<li><a href=\"https://azure.microsoft.com/en-gb/services/app-service/web/\">http://Azure-App-Service<\/a><\/li>\n<\/ul>\n\n<p>Content will be added here:<\/p>\n\n<pre class=\"prettyprint\">\n\t<code>\n\tpackage phelaja.org;\n\tpublic class Oven {\n\t\tpublic static void main(String[] args) {\n\t\t\tSystem.out.print(\"Baking!\");\n\t }\n\t}\n\t<\/code>\n<\/pre>\n\n<p>All Buid Scripts will be loaded as above.<\/p>\n"
+        }
+    ]
+}
