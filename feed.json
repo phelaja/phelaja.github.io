@@ -10,6 +10,17 @@
     },
     "items": [
         {
+            "id": "https://phelaja.github.io//blog/2017/third-post.html",
+            
+           
+            "url": "https://phelaja.github.io//blog/2017/third-post.html",
+            "date_published": "2017-12-29T00:00:00Z",
+            "date_modified": "2017-12-29T00:00:00Z",
+            "author" : "Peter Phelan",
+            "tags": [ "blog" ],
+            "content_html" : "<p><b>Configuring Web Apps <\/b><\/p>\n<p>This third post covers covers the configuration of the Web Apps just created in post 2.<\/p>\n<img src=\"/img/blog/config.png\"/>\n\n<ul>\n<li><a href=\"https://azure.microsoft.com/en-gb/services/app-service/web/\">http://Azure-App-Service<\/a><\/li>\n<\/ul>\n\n<pre class=\"prettyprint\">\n\t<code>\n\tpackage phelaja.org;\n\tpublic class Oven {\n\t\tpublic static void main(String[] args) {\n\t\t\tSystem.out.print(\"Baking!\");\n\t }\n\t}\n\t<\/code>\n<\/pre>\n\n<p>All Buid Scripts will be loaded as above.<\/p>\n"
+        }, 
+        {
             "id": "https://phelaja.github.io//blog/2017/first-post.html",
             
            
@@ -18,7 +29,7 @@
             "date_modified": "2017-12-28T00:00:00Z",
             "author" : "Peter Phelan",
             "tags": [ "blog" ],
-            "content_html" : "\n\n\n<p>This blog has been setup as a training blog.<\/p>\n<img src=\"/img/blog/scene.jpg\"/>\n<p>The is my first introductory post which will hopefully be the first of many. This site will catalog my journey through a multitude of training which I intend to undertake over the coming months<\/p>\n"
+            "content_html" : "\n\n<p><b>Introduction <\/b><\/p>\n<p>This is my training blog and this is my first introductory post which will hopefully be the first of many.<\/p>\n<img src=\"/img/blog/scene.jpg\"/>\n<p>This site will catalog my journey through a multitude of training which I intend to undertake over the coming months<\/p>\n"
         }, 
         {
             "id": "https://phelaja.github.io//blog/2017/second-post.html",
@@ -29,7 +40,7 @@
             "date_modified": "2017-12-28T00:00:00Z",
             "author" : "Peter Phelan",
             "tags": [ "blog" ],
-            "content_html" : "\n<img src=\"/img/blog/bike.jpg\"/>\n\n<p>This first training post covers the keys elements of Azure Desgining and Implementing Websites.<\/p>\n\n<ul>\n<li><a href=\"https://azure.microsoft.com/en-gb/services/app-service/web/\">http://Azure-App-Service<\/a><\/li>\n<\/ul>\n\n<p>Content will be added here:<\/p>\n\n<pre class=\"prettyprint\">\n\t<code>\n\tpackage phelaja.org;\n\tpublic class Oven {\n\t\tpublic static void main(String[] args) {\n\t\t\tSystem.out.print(\"Baking!\");\n\t }\n\t}\n\t<\/code>\n<\/pre>\n\n<p>All Buid Scripts will be loaded as above.<\/p>\n"
+            "content_html" : "<p><b>Deploying Web Apps <\/b><\/p>\n<img src=\"/img/blog/WebApp.png\"/>\n<p>This first training post which covers Wep App deployemnt, the first chapter of Azure Desgining and Implementing Websites.\n\tThe key focus of this post is on <b>AzureRM<\/b> Poweshell command and once logged into the Azure account <i>(login-azureRMAccount)<\/i> \n\twe're good to go. The required AzureRM resources are;\n\t<ul style=\"list-style-type:disc\">\n\t\t<li><a href=\"https://docs.microsoft.com/en-us/powershell/module/azurerm.resources/new-azurermresourcegroup\">AzureRm<b>ResourceGroup<\/b><\/a> - Creating a new Resource Group<\/li>\n\t\t<li><a href=\"https://docs.microsoft.com/en-us/powershell/module/azurerm.websites/new-azurermappserviceplan\">AzureRM<b>AppServicePlan<\/b><\/a> - Creating a new App Service Plan within that Resource Group<\/li>\n\t\t<li><a href=\"https://docs.microsoft.com/en-us/powershell/module/azurerm.websites/new-azurermwebapp\">AzureRM<b>WebApp<\/b><\/a> - Creating a new App within the Service Plan <\/li>\n\t\t<li><a href=\"https://docs.microsoft.com/en-us/powershell/module/azurerm.websites/new-azurermwebappslot\">AzureRM<b>WebAppSlot<\/b><\/a> - Creating a new Web App Deployment Slot for staged publishing <\/li>\n\t <\/ul> \n\tThe PowerShell code required to achieve this is as follows;\n<\/p>\n<pre class=\"prettyprint\">\n\t<code>\n\t\t# Replace the following URL with a public GitHub repo URL\n\t\t$gitrepo=\"https://github.com/phelaja/DeployWebsites.git\"\n\t\t$webappname=\"mywebapp$(Get-Random)\"\n\t\t$location=\"West Europe\"\n\t\t$ResourceGroup=\"PhelajaTraining\"\n\t\t\n\t\t# Create a resource group.\n\t\tNew-AzureRmResourceGroup -Name $ResourceGroup -Location $location\n\t\t\n\t\t# Create an App Service plan in Free tier.\n\t\tNew-AzureRmAppServicePlan -Name $webappname -Location $location `\n\t\t-ResourceGroupName $ResourceGroup -Tier Free\n\t\t\n\t\t# Create a web app.\n\t\tNew-AzureRmWebApp -Name $webappname -Location $location `\n\t\t-AppServicePlan $webappname -ResourceGroupName $ResourceGroup\n\t\t\n\t\t# Upgrade App Service plan to Standard tier (minimum required by deployment slots)\n\t\tSet-AzureRmAppServicePlan -Name $webappname -ResourceGroupName $ResourceGroup `\n\t\t-Tier Standard\n\t\t\n\t\t#Create a deployment slot with the name \"staging\".\n\t\tNew-AzureRmWebAppSlot -Name $webappname -ResourceGroupName $ResourceGroup `\n\t\t-Slot staging\n\t\t\n\t\t# Configure GitHub deployment to the staging slot from your GitHub repo and deploy once.\n\t\t$PropertiesObject = @{\n\t\t\trepoUrl = \"$gitrepo\";\n\t\t\tbranch = \"master\";\n\t\t}\n\t\tSet-AzureRmResource -PropertyObject $PropertiesObject -ResourceGroupName $ResourceGroup `\n\t\t-ResourceType Microsoft.Web/sites/slots/sourcecontrols `\n\t\t-ResourceName $webappname/staging/web -apiversion 2016-08-01 -Force\n\t\t\n\t\t# Swap the verified/warmed up staging slot into production.\n\t\tSwap-AzureRmWebAppSlot -Name $webappname -ResourceGroupName $ResourceGroup `\n\t\t-SourceSlotName staging -DestinationSlotName production\n\t<\/code>\n<\/pre>\n\n<p>To Remove the deployment i.e. reverse the above the simplest method to Remove the Resource Group that this deployemnt sits within. \n\tThe following script will achieve this;\n<\/p>\n<pre class=\"prettyprint\">\n\t\t<code>\n\t\tRemove-AzureRmResourceGroup -Name myResourceGroup -Force\n\t\t<\/code>\n\t<\/pre>\n"
         }
     ]
 }

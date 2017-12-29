@@ -184,29 +184,69 @@
   
          
     <div id="content">
-       
-<img src="/img/blog/bike.jpg"/>
-
-<p>This first training post covers the keys elements of Azure Desgining and Implementing Websites.</p>
-
-<ul>
-<li><a href="https://azure.microsoft.com/en-gb/services/app-service/web/">http://Azure-App-Service</a></li>
-</ul>
-
-<p>Content will be added here:</p>
-
+       <p><b>Deploying Web Apps </b></p>
+<img src="/img/blog/WebApp.png"/>
+<p>This first training post which covers Wep App deployemnt, the first chapter of Azure Desgining and Implementing Websites.
+	The key focus of this post is on <b>AzureRM</b> Poweshell command and once logged into the Azure account <i>(login-azureRMAccount)</i> 
+	we're good to go. The required AzureRM resources are;
+	<ul style="list-style-type:disc">
+		<li><a href="https://docs.microsoft.com/en-us/powershell/module/azurerm.resources/new-azurermresourcegroup">AzureRm<b>ResourceGroup</b></a> - Creating  a new Resource Group</li>
+		<li><a href="https://docs.microsoft.com/en-us/powershell/module/azurerm.websites/new-azurermappserviceplan">AzureRM<b>AppServicePlan</b></a> - Creating a new App Service Plan within that Resource Group</li>
+		<li><a href="https://docs.microsoft.com/en-us/powershell/module/azurerm.websites/new-azurermwebapp">AzureRM<b>WebApp</b></a> - Creating a new App within the Service Plan </li>
+		<li><a href="https://docs.microsoft.com/en-us/powershell/module/azurerm.websites/new-azurermwebappslot">AzureRM<b>WebAppSlot</b></a> - Creating a new Web App Deployment Slot for staged publishing </li>
+	  </ul>  
+	The PowerShell code required to achieve this is as follows;
+</p>
 <pre class="prettyprint">
 	<code>
-	package phelaja.org;
-	public class Oven {
-		public static void main(String[] args) {
-			System.out.print("Baking!");
-	  }
-	}
+		# Replace the following URL with a public GitHub repo URL
+		$gitrepo="https://github.com/phelaja/DeployWebsites.git"
+		$webappname="mywebapp$(Get-Random)"
+		$location="West Europe"
+		$ResourceGroup="PhelajaTraining"
+		
+		# Create a resource group.
+		New-AzureRmResourceGroup -Name $ResourceGroup -Location $location
+		
+		# Create an App Service plan in Free tier.
+		New-AzureRmAppServicePlan -Name $webappname -Location $location `
+		-ResourceGroupName $ResourceGroup -Tier Free
+		
+		# Create a web app.
+		New-AzureRmWebApp -Name $webappname -Location $location `
+		-AppServicePlan $webappname -ResourceGroupName $ResourceGroup
+		
+		# Upgrade App Service plan to Standard tier (minimum required by deployment slots)
+		Set-AzureRmAppServicePlan -Name $webappname -ResourceGroupName $ResourceGroup `
+		-Tier Standard
+		
+		#Create a deployment slot with the name "staging".
+		New-AzureRmWebAppSlot -Name $webappname -ResourceGroupName $ResourceGroup `
+		-Slot staging
+		
+		# Configure GitHub deployment to the staging slot from your GitHub repo and deploy once.
+		$PropertiesObject = @{
+			repoUrl = "$gitrepo";
+			branch = "master";
+		}
+		Set-AzureRmResource -PropertyObject $PropertiesObject -ResourceGroupName $ResourceGroup `
+		-ResourceType Microsoft.Web/sites/slots/sourcecontrols `
+		-ResourceName $webappname/staging/web -apiversion 2016-08-01 -Force
+		
+		# Swap the verified/warmed up staging slot into production.
+		Swap-AzureRmWebAppSlot -Name $webappname -ResourceGroupName $ResourceGroup `
+		-SourceSlotName staging -DestinationSlotName production
 	</code>
 </pre>
 
-<p>All Buid Scripts will be loaded as above.</p>
+<p>To Remove the deployment i.e. reverse the above the simplest method to Remove the Resource Group that this deployemnt sits within. 
+	The following script will achieve this;
+</p>
+<pre class="prettyprint">
+		<code>
+		Remove-AzureRmResourceGroup -Name myResourceGroup -Force
+		</code>
+	</pre>
 
     </div>
 	
@@ -359,15 +399,6 @@
                     <h3>Tags</h3>
                 </header>
 
-                    <li>
-                        <article>
-                            <header>
-                                <a href="tags/asciidoc.html">asciidoc</a>
-                                <!-- JBake 2.5.1 Issue#357 prevents accessing db, This can be enabled once issue is fixed. -->
-                                <!-- <span style="float:right;"> (db.getPublishedPostsByTag(sideBarTag1).size()) </span>-->
-                            </header>
-                        </article>
-                    </li>
                     <li>
                         <article>
                             <header>
